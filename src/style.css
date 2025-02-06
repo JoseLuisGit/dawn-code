@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
 html {
-  background-color: orange;
+  @apply bg-linear-to-l from-orange-900 to-orange-400;
 }
