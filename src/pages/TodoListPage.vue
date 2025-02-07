@@ -96,7 +96,8 @@ const scrollToEnd = () => {
                         <p class="pl-10 text-sm text-gray-700 font-medium">
                             {{ countCompletedTask }} of {{ tasks.length }} tasks completed</p>
                     </div>
-                    <div class="bg-green-600 h-8 dark:bg-green-500" style="width: 45%"></div>
+                    <div class="bg-green-600 h-8 dark:bg-green-500"
+                        :style="{ width: `${(countCompletedTask / tasks.length) * 100}%` }"></div>
                 </div>
                 <button @click="removeCompletedTask"
                     class="w-1/2 w-sm-1/2 max-w-sm m-0.5 py-2 rounded cursor-pointer text-xs bg-blue-400 hover:bg-blue-500 text-white">Remove
