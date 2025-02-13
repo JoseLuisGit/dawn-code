@@ -7,6 +7,8 @@ let mainInput = ref<string>('0')
 
 let history = ref<string>('')
 let result: number = 0
+let lastOperation: string = ''
+let hasEqual: boolean = false
 
 let hasOperation = ref<boolean>(false)
 
@@ -14,9 +16,14 @@ function addInput(value: string) {
     if (mainInput.value === '0' && value !== '.') {
         mainInput.value = ''
     }
-    if (hasOperation.value) {
+    if (hasOperation.value || hasEqual) {
         mainInput.value = ''
         hasOperation.value = false
+        if (hasEqual) {
+            hasEqual = false
+            history.value = ''
+            result = Number(mainInput.value)
+        }
     }
     mainInput.value += value
 }
@@ -26,29 +33,30 @@ function deleteLeft() {
 }
 
 function addOperation(value: string) {
+    if (hasOperation.value) {
+        history.value = history.value.slice(0, -2)
+        history.value += ' ' + value + ' '
+        lastOperation = value
+        return
+    }
+    if (hasEqual) {
+        result = Number(mainInput.value)
+        history.value = mainInput.value + ' ' + value + ' '
+        hasOperation.value = true
+        lastOperation = value
+        hasEqual = false
+        return
+    }
     history.value += mainInput.value + ' ' + value + ' '
     hasOperation.value = true
 
     if (result === 0) {
         result = Number(mainInput.value)
+        lastOperation = value
         return;
     }
-
-    switch (value) {
-        case '+':
-            result = result + Number(mainInput.value)
-            break;
-        case '-':
-            result = result - Number(mainInput.value)
-            break;
-        case 'x':
-            result = result * Number(mainInput.value)
-            break;
-        case '/':
-            result = result / Number(mainInput.value)
-            break;
-    }
-
+    handleOperations(lastOperation, mainInput.value)
+    lastOperation = value
     mainInput.value = String(result)
 }
 
@@ -60,6 +68,32 @@ function reset() {
 
 function resetMainInput() {
     mainInput.value = '0'
+}
+
+function handleOperations(operator: string, value: string) {
+    switch (operator) {
+        case '+':
+            result = result + Number(value)
+            break;
+        case '-':
+            result = result - Number(value)
+            break;
+        case 'x':
+            result = result * Number(value)
+            break;
+        case '/':
+            result = result / Number(value)
+            break;
+    }
+}
+
+function handleEqual() {
+    history.value += mainInput.value
+    handleOperations(lastOperation, mainInput.value)
+    history.value += ' = '
+    mainInput.value = result.toString()
+    hasOperation.value = false
+    hasEqual = true
 }
 
 </script>
@@ -135,8 +169,8 @@ function resetMainInput() {
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-100 hover:bg-gray-300 text-black"
                     @click="addInput('6')">6</button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
-                        :icon="['fas', 'xmark']" @click="addOperation('x')" /></button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="addOperation('x')"><font-awesome-icon :icon="['fas', 'xmark']" /></button>
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-semibold text-3xl bg-gray-300 hover:bg-gray-400 text-black">1/x</button>
                 <button
@@ -153,8 +187,8 @@ function resetMainInput() {
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
                         :icon="['fas', 'minus']" @click="addOperation('-')" /></button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-blue-400 hover:bg-blue-500 text-white col-span-1 row-span-2"><font-awesome-icon
-                        :icon="['fas', 'equals']" /></button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-blue-400 hover:bg-blue-500 text-white col-span-1 row-span-2"
+                    @click="handleEqual"><font-awesome-icon :icon="['fas', 'equals']" /></button>
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-100 hover:bg-gray-300 text-black row-span-1 col-span-2"
                     @click="addInput('0')">0</button>

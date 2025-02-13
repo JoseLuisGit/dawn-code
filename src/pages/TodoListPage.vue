@@ -65,7 +65,7 @@ const scrollToEnd = () => {
 <template>
     <div
         class="bg-gradient-to-tl from-green-950 to-green-400 h-screen flex flex-col items-center justify-center w-full">
-        <section class="container bg-white h-1/2 max-w-xl w-3/4">
+        <section class="container bg-white h-115 max-w-xl w-3/4">
             <h1 class="text-2xl text-gray-800 font-bold text-center pt-6 pb-2">TODOLIST</h1>
             <form v-on:submit="addTask" class="flex items-center justify-center pr-3 pl-3">
                 <input type="text" placeholder="Add a task" v-model="newTask"
