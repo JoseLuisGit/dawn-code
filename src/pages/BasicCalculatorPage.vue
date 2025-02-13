@@ -30,6 +30,9 @@ function addInput(value: string) {
 
 function deleteLeft() {
     mainInput.value = mainInput.value.slice(0, -1)
+    if (mainInput.value === '') {
+        mainInput.value = '0'
+    }
 }
 
 function addOperation(value: string) {
@@ -139,8 +142,8 @@ function handlePlusMinus() {
                     @click="resetMainInput">CE</button>
 
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black" @click="handlePlusMinus"><font-awesome-icon
-                        :icon="['fas', 'plus-minus']" /></button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="handlePlusMinus"><font-awesome-icon :icon="['fas', 'plus-minus']" /></button>
 
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
