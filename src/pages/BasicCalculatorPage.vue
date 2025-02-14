@@ -11,6 +11,7 @@ let lastOperation: string = ''
 let hasEqual: boolean = false
 
 let hasOperation = ref<boolean>(false)
+let hasSpecialOperation: boolean = false
 
 function addInput(value: string) {
     if (mainInput.value === '0' && value !== '.') {
@@ -50,7 +51,15 @@ function addOperation(value: string) {
         hasEqual = false
         return
     }
-    history.value += mainInput.value + ' ' + value + ' '
+    if (hasSpecialOperation) {
+        history.value += value + ' '
+        hasSpecialOperation = false
+        lastOperation = value
+        hasOperation.value = true
+        return
+    } else {
+        history.value += mainInput.value + ' ' + value + ' '
+    }
     hasOperation.value = true
 
     if (result === 0) {
@@ -87,16 +96,36 @@ function handleOperations(operator: string, value: string) {
         case '/':
             result = result / Number(value)
             break;
+        case 'sqrt':
+            result = Math.sqrt(Number(value))
+            history.value += `sqrt(${value}) `
+            break;
+        case 'sqrd':
+            result = Math.pow(Number(value), 2)
+            history.value += `sqrd(${value}) `
+            break;
+        case 'rcprcl':
+            result = 1 / Number(value)
+            history.value += `rcprcl(${value}) `
+            break;
     }
 }
 
 function handleEqual() {
-    history.value += mainInput.value
+    if (!hasSpecialOperation) {
+        history.value += mainInput.value
+    }
     handleOperations(lastOperation, mainInput.value)
     history.value += ' = '
     mainInput.value = result.toString()
     hasOperation.value = false
     hasEqual = true
+}
+
+function handleSpecialOperations(operator: string) {
+    handleOperations(operator, mainInput.value)
+    mainInput.value = result.toString()
+    hasSpecialOperation = true
 }
 
 function handlePlusMinus() {
@@ -105,6 +134,10 @@ function handlePlusMinus() {
         history.value = ''
         result = 0
     }
+}
+
+function handlePercent() {
+    mainInput.value = String(Number(mainInput.value) / 100)
 }
 
 </script>
@@ -146,11 +179,13 @@ function handlePlusMinus() {
                     @click="handlePlusMinus"><font-awesome-icon :icon="['fas', 'plus-minus']" /></button>
 
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="handleSpecialOperations('sqrt')"><font-awesome-icon
                         :icon="['fas', 'square-root-variable']" /></button>
 
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black">^2</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="handleSpecialOperations('sqrd')">^2</button>
 
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-100 hover:bg-gray-300 text-black"
@@ -164,11 +199,11 @@ function handlePlusMinus() {
                     @click="addInput('9')">9</button>
 
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
-                        :icon="['fas', 'divide']" @click="addOperation('/')" /></button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="addOperation('/')"><font-awesome-icon :icon="['fas', 'divide']" /></button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"><font-awesome-icon
-                        :icon="['fas', 'percent']" /></button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="handlePercent"><font-awesome-icon :icon="['fas', 'percent']" /></button>
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-100 hover:bg-gray-300 text-black"
                     @click="addInput('4')">4</button>
@@ -183,7 +218,8 @@ function handlePlusMinus() {
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-bold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
                     @click="addOperation('x')"><font-awesome-icon :icon="['fas', 'xmark']" /></button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-semibold text-3xl bg-gray-300 hover:bg-gray-400 text-black">1/x</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-semibold text-3xl bg-gray-300 hover:bg-gray-400 text-black"
+                    @click="handleSpecialOperations('rcprcl')">1/x</button>
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-100 hover:bg-gray-300 text-black"
                     @click="addInput('1')">1</button>
