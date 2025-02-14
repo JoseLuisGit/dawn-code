@@ -6,7 +6,8 @@ export const router = createRouter({
     routes: [
         { path: '/', name: 'Home', component: HomePage },
         { path: '/todo-list', name: 'TodoList', component: () => import('../pages/TodoListPage.vue') },
-        { path: '/basic-calculator', name: 'BasicCalculator', component: () => import('../pages/BasicCalculatorPage.vue') }
+        { path: '/basic-calculator', name: 'BasicCalculator', component: () => import('../pages/BasicCalculatorPage.vue') },
+        { path: '/digital-clock', name: 'DigitalClock', component: () => import('../pages/DigitalClockPage.vue') }
     ]
 });
 

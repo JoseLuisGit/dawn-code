@@ -8,6 +8,7 @@ import Button from '../components/common/Button.vue'
             class="container h-full bg-clip-border bg-gradient-to-tl from-35%-950 to-cyan-700 pl-4 pr-4 pb-2 pt-2 flex flex-row justify-center">
             <Button title="Todo List" />
             <Button title="Basic Calculator" />
+            <Button title="Digital Clock" />
         </div>
     </div>
 </template>
