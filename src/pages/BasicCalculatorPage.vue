@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-
-
 let mainInput = ref<string>('0')
+let memoryResult = ref<string>('0')
+let memory = 0
 
 let history = ref<string>('')
 let result: number = 0
@@ -140,16 +140,43 @@ function handlePercent() {
     mainInput.value = String(Number(mainInput.value) / 100)
 }
 
+function addMemory() {
+    if (mainInput.value === '0') {
+        return
+    }
+    if (memoryResult.value !== '0') {
+        memoryResult.value = String(Number(memoryResult.value) + memory)
+    } else {
+        memoryResult.value = mainInput.value
+        memory = Number(mainInput.value)
+    }
+}
+
+function resetMemory() {
+    memory = 0
+    memoryResult.value = '0'
+}
+
+function substractMemory() {
+    if (memoryResult.value !== '0' || memory !== 0) {
+        memoryResult.value = String(Number(memoryResult.value) - memory)
+    }
+}
+
 </script>
 
 <template>
     <div class="bg-gradient-to-tl from-gray-950 to-gray-700 h-screen flex flex-col items-center justify-center w-full">
         <section class="container bg-white h-140 max-w-90 rounded-xl pr-3 pl-3 pt-4 border-gray-400 border-2">
-            <div class="flex items-center justify-evenly pr-1 pb-2">
-                <h1 class="text-xl text-gray-500 font-normal">Basic Calculator</h1>
-                <font-awesome-icon :icon="['fas', 'bars']" class="ml-auto mr-2 cursor-pointer" />
+            <div class="flex justify-start pr-1 pb-2">
+                <h1 class="text-xl text-gray-500 font-normal ">Basic Calculator</h1>
             </div>
             <div class="container bg-gray-100 h-15 border-gray-400 border rounded-b-md rounded-t-md mb-5">
+                <div v-if="memoryResult !== '0'"
+                    class="text-left mt-8 ml-2 z-10 absolute flex items-start justify-evenly">
+                    <p class="text-sm font-medium text-red-500">M</p>
+                    <p class="text-sm font-medium pl-1 text-gray-500 ">{{ memoryResult }}</p>
+                </div>
                 <div class="h-4">
                     <h2 class="text-md text-gray-500 text-right mr-2">{{ history }}</h2>
                 </div>
@@ -157,13 +184,17 @@ function handlePercent() {
             </div>
             <div class="grid grid-cols-5 gap-2">
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white">MC</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white"
+                    @click="resetMemory">MC</button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white">M-</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white"
+                    @click="substractMemory">M-</button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white">M+</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white"
+                    @click="addMemory">M+</button>
                 <button
-                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white">MR</button>
+                    class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-red-700 hover:bg-red-800 text-white"
+                    @click="mainInput = memoryResult">MR</button>
                 <button
                     class="px-2 py-3 border border-gray-100 rounded cursor-pointer font-medium text-3xl bg-gray-300 hover:bg-gray-400 text-black"
                     @click="deleteLeft"><font-awesome-icon :icon="['fas', 'delete-left']" /></button>
