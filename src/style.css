@@ -1,5 +1,15 @@
+@font-face {
+  font-family: "Digital";
+  src: url("../public/fonts/digital-7.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
 @import "tailwindcss";
 
 html {
   @apply bg-linear-to-br from-cyan-700 to-cyan-500;
+}
+
+@theme {
+  --font-digital: "Digital", sans-serif;
 }
